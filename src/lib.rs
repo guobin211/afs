@@ -15,183 +15,204 @@ pub use fs_err::*;
 /// Re-exporting fs_extra for convenience
 pub use fs_extra::*;
 
-/// 异步读取文件内容到字符串
+/// Asynchronously read file content to string
 ///
-/// # 参数
-/// - `path`: 要读取的文件的路径
+/// # Arguments
+/// - `path`: Path to the file to read
 ///
-/// # 返回
-/// - 如果成功，返回包含文件内容的字符串
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns a string containing the file content
+/// - On failure, returns an error
 pub async fn read_file(path: &str) -> AnyResult<String> {
-    // 异步读取文件内容到字符串
+    // Asynchronously read file content to string
     let content = tokio::fs::read_to_string(path)
         .await
         .with_context(|| format!("Failed to read file: {path}"))?;
     Ok(content)
 }
 
-/// 同步读取文件内容到字符串
+/// Synchronously read file content to string
+///
+/// # Arguments
+/// - `path`: Path to the file to read
+///
+/// # Returns
+/// - On success, returns a string containing the file content
+/// - On failure, returns an error
 pub fn read_file_sync(path: &str) -> AnyResult<String> {
     let content = std::fs::read_to_string(path)
         .with_context(|| format!("Failed to read file: {path}"))?;
     Ok(content)
 }
 
-/// 同步写入字符串内容到文件
+/// Synchronously write string content to file
 ///
-/// # 参数
-/// - `path`: 要写入的文件的路径
-/// - `content`: 要写入的字符串内容
+/// # Arguments
+/// - `path`: Path to the file to write
+/// - `content`: String content to write
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
 pub fn write_file_sync(path: &str, content: &str) -> AnyResult<()> {
-    // 创建一个新文件，如果文件已存在则覆盖
+    // Create a new file, overwriting if it already exists
     let mut file = File::create(path)?;
-    // 将内容写入文件
+    // Write the content to the file
     file.write_all(content.as_bytes())?;
     Ok(())
 }
 
-/// 异步写入字符串内容到文件
+/// Asynchronously write string content to file
 ///
-/// # 参数
-/// - `path`: 要写入的文件的路径
-/// - `content`: 要写入的字符串内容
+/// # Arguments
+/// - `path`: Path to the file to write
+/// - `content`: String content to write
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
 pub async fn write_file(path: &str, content: &str) -> AnyResult<()> {
-    // 异步创建一个新文件，如果文件已存在则覆盖
+    // Asynchronously create a new file, overwriting if it already exists
     let mut file = tokio::fs::File::create(path)
         .await
         .with_context(|| format!("Failed to create file: {path}"))?;
-    // 异步将内容写入文件
+    // Asynchronously write content to the file
     file.write_all(content.as_bytes())
         .await
         .with_context(|| format!("Failed to write to file: {path}"))?;
     Ok(())
 }
 
-/// 同步追加字符串内容到文件
+/// Synchronously append string content to file
 ///
-/// # 参数
-/// - `path`: 要追加内容的文件的路径
-/// - `content`: 要追加的字符串内容
+/// # Arguments
+/// - `path`: Path to the file to append to
+/// - `content`: String content to append
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
 pub fn append_file_sync(path: &str, content: &str) -> AnyResult<()> {
-    // 以追加模式打开文件
+    // Open file in append mode
     let mut file = File::options().append(true).open(path)?;
-    // 将内容追加到文件
+    // Append content to the file
     file.write_all(content.as_bytes())?;
     Ok(())
 }
 
-/// 异步追加字符串内容到文件
+/// Asynchronously append string content to file
 ///
-/// # 参数
-/// - `path`: 要追加内容的文件的路径
-/// - `content`: 要追加的字符串内容
+/// # Arguments
+/// - `path`: Path to the file to append to
+/// - `content`: String content to append
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
 pub async fn append_file(path: &str, content: &str) -> AnyResult<()> {
-    // 异步以追加模式打开文件
+    // Asynchronously open file in append mode
     let mut file = tokio::fs::OpenOptions::new()
         .append(true)
         .create(true) // Create if it doesn't exist, common for append
         .open(path)
         .await
         .with_context(|| format!("Failed to open file for appending: {path}"))?;
-    // 异步将内容追加到文件
+    // Asynchronously append content to the file
     file.write_all(content.as_bytes())
         .await
         .with_context(|| format!("Failed to append to file: {path}"))?;
     Ok(())
 }
 
-/// 同步创建目录
+/// Synchronously create directory
 ///
-/// # 参数
-/// - `path`: 要创建的目录的路径
+/// # Arguments
+/// - `path`: Path to the directory to create
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
 pub fn mkdir_sync(path: &str) -> AnyResult<()> {
-    // 同步创建目录，不递归创建
+    // Synchronously create directory, non-recursive
     dir::create(path, false)?;
     Ok(())
 }
 
-/// 异步创建目录
+/// Asynchronously create directory
 ///
-/// # 参数
-/// - `path`: 要创建的目录的路径
+/// # Arguments
+/// - `path`: Path to the directory to create
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
 pub async fn mkdir(path: &str) -> AnyResult<()> {
-    // 异步递归创建目录
+    // Asynchronously create directory recursively
     tokio::fs::create_dir_all(path)
         .await
         .with_context(|| format!("Failed to create directory: {path}"))?;
     Ok(())
 }
 
-/// 同步删除目录
+/// Synchronously remove directory
 ///
-/// # 参数
-/// - `path`: 要删除的目录的路径
+/// # Arguments
+/// - `path`: Path to the directory to remove
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
 pub fn rmdir_sync(path: &str) -> AnyResult<()> {
-    // 同步删除目录
+    // Synchronously remove directory
     dir::remove(path)?;
     Ok(())
 }
 
-/// 异步删除目录
+/// Asynchronously remove directory
 ///
-/// # 参数
-/// - `path`: 要删除的目录的路径
+/// # Arguments
+/// - `path`: Path to the directory to remove
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
 pub async fn rmdir(path: &str) -> AnyResult<()> {
-    // 异步递归删除目录
+    // Asynchronously remove directory recursively
     tokio::fs::remove_dir_all(path)
         .await
         .with_context(|| format!("Failed to remove directory: {path}"))?;
     Ok(())
 }
 
-/// 读取json文件到结构体，忽略未定义的字段
+/// Read JSON file to struct, ignoring undefined fields
+///
+/// # Arguments
+/// - `file_path`: Path to the JSON file to read
+///
+/// # Returns
+/// - On success, returns the deserialized struct
+/// - On failure, returns an error
 pub async fn read_from_json<T: for<'a> Deserialize<'a>>(file_path: &str) -> AnyResult<T> {
-    // 读取文件内容
+    // Read file content
     let content = tokio::fs::read_to_string(file_path)
         .await
         .with_context(|| format!("Failed to read JSON file: {file_path}"))?;
 
-    // 解析json字符串到结构体
+    // Parse JSON string to struct
     let data: T = serde_json::from_str::<T>(&content)
         .with_context(|| format!("Failed to parse JSON from file: {file_path}"))?;
 
     Ok(data)
 }
 
-/// 读取json文件到serde_json::Value
+/// Read JSON file to serde_json::Value
+///
+/// # Arguments
+/// - `file_path`: Path to the JSON file to read
+///
+/// # Returns
+/// - On success, returns the JSON value
+/// - On failure, returns an error
 pub async fn read_json(file_path: &str) -> AnyResult<serde_json::Value> {
     let content = tokio::fs::read_to_string(file_path)
         .await
@@ -201,7 +222,15 @@ pub async fn read_json(file_path: &str) -> AnyResult<serde_json::Value> {
     Ok(data)
 }
 
-/// 写入结构体到json文件
+/// Write struct to JSON file
+///
+/// # Arguments
+/// - `file_path`: Path to the JSON file to write
+/// - `data`: Data to serialize and write
+///
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
 pub async fn write_to_json<T: serde::Serialize>(file_path: &str, data: &T) -> AnyResult<()> {
     let mut file = tokio::fs::File::create(file_path)
         .await
@@ -214,7 +243,14 @@ pub async fn write_to_json<T: serde::Serialize>(file_path: &str, data: &T) -> An
     Ok(())
 }
 
-/// 判断文件是否存在
+/// Check if file exists
+///
+/// # Arguments
+/// - `file_path`: Path to the file to check
+///
+/// # Returns
+/// - `true` if the path exists and is a file
+/// - `false` otherwise
 pub async fn file_exists(file_path: &str) -> bool {
     tokio::fs::metadata(file_path)
         .await
@@ -222,7 +258,14 @@ pub async fn file_exists(file_path: &str) -> bool {
         .unwrap_or(false)
 }
 
-/// 判断目录是否存在
+/// Check if directory exists
+///
+/// # Arguments
+/// - `dir_path`: Path to the directory to check
+///
+/// # Returns
+/// - `true` if the path exists and is a directory
+/// - `false` otherwise
 pub async fn dir_exists(dir_path: &str) -> bool {
     tokio::fs::metadata(dir_path)
         .await
@@ -230,7 +273,14 @@ pub async fn dir_exists(dir_path: &str) -> bool {
         .unwrap_or(false)
 }
 
-/// 判断是否是文件
+/// Check if path is a file
+///
+/// # Arguments
+/// - `file_path`: Path to check
+///
+/// # Returns
+/// - `true` if the path exists and is a file
+/// - `false` otherwise
 pub async fn is_file(file_path: &str) -> bool {
     tokio::fs::metadata(file_path)
         .await
@@ -238,7 +288,14 @@ pub async fn is_file(file_path: &str) -> bool {
         .unwrap_or(false)
 }
 
-/// 判断是否是目录
+/// Check if path is a directory
+///
+/// # Arguments
+/// - `dir_path`: Path to check
+///
+/// # Returns
+/// - `true` if the path exists and is a directory
+/// - `false` otherwise
 pub async fn is_dir(dir_path: &str) -> bool {
     tokio::fs::metadata(dir_path)
         .await
@@ -246,7 +303,14 @@ pub async fn is_dir(dir_path: &str) -> bool {
         .unwrap_or(false)
 }
 
-/// 判断是否是符号链接
+/// Check if path is a symbolic link
+///
+/// # Arguments
+/// - `path`: Path to check
+///
+/// # Returns
+/// - `true` if the path exists and is a symbolic link
+/// - `false` otherwise
 pub async fn is_symlink(path: &str) -> bool {
     tokio::fs::symlink_metadata(path)
         .await
@@ -254,7 +318,14 @@ pub async fn is_symlink(path: &str) -> bool {
         .unwrap_or(false)
 }
 
-/// 获取文件大小
+/// Get file size
+///
+/// # Arguments
+/// - `file_path`: Path to the file to get size of
+///
+/// # Returns
+/// - On success, returns the file size in bytes
+/// - On failure, returns an error
 pub async fn get_file_size(file_path: &str) -> AnyResult<u64> {
     let metadata = tokio::fs::metadata(file_path)
         .await
@@ -262,14 +333,14 @@ pub async fn get_file_size(file_path: &str) -> AnyResult<u64> {
     Ok(metadata.len())
 }
 
-/// 获取软连接文件大小 (实际指向的文件的大小)
+/// Get real size of symlinked file (actual size of the target file)
 ///
-/// # 参数
-/// - `file_path`: 要获取大小的文件路径
+/// # Arguments
+/// - `file_path`: Path to the file to get size of
 ///
-/// # 返回
-/// - 如果成功，返回文件大小（字节数）
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns file size in bytes
+/// - On failure, returns an error
 pub async fn get_file_real_size(file_path: &str) -> AnyResult<u64> {
     // tokio::fs::metadata follows symlinks by default.
     let metadata = tokio::fs::metadata(file_path)
@@ -278,14 +349,14 @@ pub async fn get_file_real_size(file_path: &str) -> AnyResult<u64> {
     Ok(metadata.len())
 }
 
-/// 获取目录大小
+/// Get directory size
 ///
-/// # 参数
-/// - `dir_path`: 要计算大小的目录路径
+/// # Arguments
+/// - `dir_path`: Path to the directory to calculate size for
 ///
-/// # 返回
-/// - 如果成功，返回目录的总大小（字节数）
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns total directory size in bytes
+/// - On failure, returns an error
 pub async fn get_dir_size(dir_path: &str) -> AnyResult<u64> {
     use std::path::PathBuf;
 
@@ -301,7 +372,7 @@ pub async fn get_dir_size(dir_path: &str) -> AnyResult<u64> {
             if metadata.is_file() {
                 total_size += metadata.len();
             } else if metadata.is_dir() {
-                // 检查是否是符号链接，避免无限循环
+                // Check if it's a symlink to avoid infinite loops
                 if !metadata.is_symlink() {
                     stack.push(entry.path());
                 }
@@ -312,11 +383,11 @@ pub async fn get_dir_size(dir_path: &str) -> AnyResult<u64> {
     Ok(total_size)
 }
 
-/// 获取磁盘使用情况
+/// Get disk usage
 ///
-/// # 返回
-/// - 如果成功，返回已使用的磁盘空间（字节数）
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns used disk space in bytes
+/// - On failure, returns an error
 pub async fn diskusage() -> AnyResult<f64> {
     use sys_info::disk_info; // Keep use statement localized if only used here
     let info = disk_info().map_err(|e| anyhow!("Failed to get disk info: {}", e))?;
@@ -324,11 +395,11 @@ pub async fn diskusage() -> AnyResult<f64> {
     Ok(used as f64)
 }
 
-/// 创建临时目录
+/// Create temporary directory
 ///
-/// # 返回
-/// - 如果成功，返回临时目录的路径字符串
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns temporary directory path string
+/// - On failure, returns an error
 pub async fn mktempdir() -> AnyResult<String> {
     let dir = tempfile::TempDir::new()
         .context("Failed to create temp directory using tempfile::TempDir")?;
@@ -342,13 +413,13 @@ pub async fn mktempdir() -> AnyResult<String> {
     })
 }
 
-/// 生成基于时间戳的随机文件名
+/// Generate timestamp-based random filename
 ///
-/// # 参数
-/// - `ext`: 文件扩展名
+/// # Arguments
+/// - `ext`: File extension
 ///
-/// # 返回
-/// - 返回一个包含时间戳和指定扩展名的随机文件名
+/// # Returns
+/// - Returns a random filename containing timestamp with specified extension
 fn random_file_name(ext: &str) -> String {
     let timestamp = SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -369,14 +440,14 @@ fn random_file_name(ext: &str) -> String {
     result
 }
 
-/// 创建临时文件
+/// Create temporary file
 ///
-/// # 参数
-/// - `ext`: 文件扩展名
+/// # Arguments
+/// - `ext`: File extension
 ///
-/// # 返回
-/// - 如果成功，返回临时文件的路径字符串
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns temporary file path string
+/// - On failure, returns an error
 pub async fn mktempfile(ext: &str) -> AnyResult<String> {
     let dir_path_str = mktempdir()
         .await
@@ -395,15 +466,15 @@ pub async fn mktempfile(ext: &str) -> AnyResult<String> {
         .ok_or_else(|| anyhow!("Temporary file path is not valid UTF-8: {:?}", file_path))
 }
 
-/// 修改文件权限
+/// Modify file permissions
 ///
-/// # 参数
-/// - `mode`: 八进制权限模式字符串（如 "755"）
-/// - `file_path`: 要修改权限的文件路径
+/// # Arguments
+/// - `mode`: Octal permission mode string (e.g. "755")
+/// - `file_path`: Path to the file to modify permissions
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
 pub fn chmod_sync(mode: &str, file_path: &str) -> AnyResult<()> {
     match u32::from_str_radix(mode, 8) {
         Ok(mode) => {
@@ -429,15 +500,15 @@ pub fn chmod_sync(mode: &str, file_path: &str) -> AnyResult<()> {
     }
 }
 
-/// 创建软链接
+/// Create symlink
 ///
-/// # 参数
-/// - `o`: 源文件或目录的路径
-/// - `l`: 链接文件的路径
+/// # Arguments
+/// - `o`: Source file or directory path
+/// - `l`: Link file path
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
 pub fn soft_link(o: &str, l: &str) -> AnyResult<()> {
     #[cfg(unix)]
     {
@@ -456,15 +527,15 @@ pub fn soft_link(o: &str, l: &str) -> AnyResult<()> {
     Ok(())
 }
 
-/// 按Node.js的方式处理路径（简化版：连接路径并处理 . 和 ..）
+/// Simplified path handling like Node.js (join and resolve . and ..)
 ///
-/// # 参数
-/// - `base_str`: 基础路径字符串
-/// - `input_str`: 要解析的输入路径字符串
+/// # Arguments
+/// - `base_str`: Base path string
+/// - `input_str`: Input path string to resolve
 ///
-/// # 返回
-/// - 如果成功，返回解析后的路径字符串
-/// - 如果路径包含无效的Unicode字符，返回错误
+/// # Returns
+/// - On success, returns resolved path string
+/// - On failure, returns an error
 pub fn resolve(base_str: &str, input_str: &str) -> Result<String, std::ffi::OsString> {
     let input_path = Path::new(input_str);
     let mut resolved_path: PathBuf;
@@ -507,40 +578,42 @@ pub fn resolve(base_str: &str, input_str: &str) -> Result<String, std::ffi::OsSt
         .ok_or_else(|| resolved_path.into_os_string())
 }
 
-/// 将路径中的反斜杠 (`\`) 替换为正斜杠 (`/`)。
+/// Normalize path by replacing backslashes with forward slashes
 ///
-/// # 参数
-/// - `path`: 要规范化的路径字符串。
+/// # Arguments
+/// - `path`: Path string to normalize
 ///
-/// # 返回
-/// - 返回一个新的字符串，其中所有的反斜杠 (`\`) 都被替换为正斜杠 (`/`)。
+/// # Returns
+/// - Returns a new string with all backslashes replaced by forward slashes
 ///
-/// # 示例
-/// ```
+/// # Example
+/// ```norun
 /// let normalized = afs::normalize_path(r"C:\Users\Example");
 /// assert_eq!(normalized, "C:/Users/Example");
 /// ```
+///
 pub fn normalize_path(path: &str) -> String {
     path.replace("\\", "/")
 }
 
-/// 获取文件的规范化路径。
+/// Get canonicalized file path
 ///
-/// 此函数首先对路径进行规范化处理，将路径中的反斜杠 (`\`) 替换为正斜杠 (`/`)，
-/// 然后使用 `std::fs::canonicalize` 获取路径的绝对规范化形式。
+/// This function first normalizes the path by replacing backslashes (`\`) with forward slashes (`/`),
+/// then uses `std::fs::canonicalize` to get the absolute canonical form of the path.
 ///
-/// # 参数
-/// - `path`: 要处理的文件路径字符串。
+/// # Arguments
+/// - `path`: File path string to process
 ///
-/// # 返回
-/// - 如果成功，返回规范化后的路径字符串。
-/// - 如果路径包含无效的 Unicode 字符或无法规范化路径，则返回错误。
+/// # Returns
+/// - On success, returns the canonicalized path string
+/// - On failure, returns an error if the path contains invalid Unicode characters or cannot be canonicalized
 ///
-/// # 示例
-/// ```no-run
+/// # Example
+/// ```norun
 /// let filepath = afs::get_filepath("C:\\Users\\Example\\file.txt")?;
 /// assert_eq!(filepath, "C:/Users/Example/file.txt");
 /// ```
+///
 pub fn get_filepath(path: &str) -> AnyResult<String> {
     // normalize_path first to handle mixed separators before canonicalize
     let normalized_input = normalize_path(path);
@@ -559,21 +632,22 @@ pub fn get_filepath(path: &str) -> AnyResult<String> {
         })
 }
 
-/// 创建文件（如果尚不存在）。如果路径中的父目录不存在，则会尝试创建它们。
+/// Create file if it does not exist. Will create parent directories if they don't exist
 ///
-/// # 参数
-/// - `filepath`: 要创建的文件路径
+/// # Arguments
+/// - `filepath`: Path to the file to create
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
+///
 pub fn create_file_sync(filepath: &str) -> AnyResult<()> {
     let path_str_normalized = normalize_path(filepath);
     let path_obj = Path::new(&path_str_normalized);
 
     if path_obj.exists() {
         return if path_obj.is_file() {
-            Ok(()) // 文件已存在
+            Ok(())
         } else {
             // 路径存在但不是文件（例如是目录）
             Err(anyhow!(
@@ -604,31 +678,33 @@ pub fn create_file_sync(filepath: &str) -> AnyResult<()> {
     Ok(())
 }
 
-/// 同步获取文件的元数据信息
+/// Synchronously get file metadata
 ///
-/// # 参数
-/// - `filepath`: 要获取元数据的文件路径
+/// # Arguments
+/// - `filepath`: Path to the file to get metadata for
 ///
-/// # 返回
-/// - 如果成功，返回文件的元数据
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns the file metadata
+/// - On failure, returns an error
+///
 pub fn stat_sync(filepath: &str) -> AnyResult<std::fs::Metadata> {
     let path = get_filepath(filepath)?;
     if path.is_empty() {
-        return Err(anyhow::anyhow!("文件路径不能为空"));
+        return Err(anyhow::anyhow!("file path cannot be empty for stat"));
     }
     std::fs::metadata(&path)
-        .map_err(|e: std::io::Error| anyhow::anyhow!("无法获取文件 {} 的元数据: {}", path, e))
+        .map_err(|e: std::io::Error| anyhow::anyhow!("can not read {} metadata: {}", path, e))
 }
 
-/// 异步获取文件的元数据信息
+/// Asynchronously get file metadata
 ///
-/// # 参数
-/// - `filepath`: 要获取元数据的文件路径
+/// # Arguments
+/// - `filepath`: Path to the file to get metadata for
 ///
-/// # 返回
-/// - 如果成功，返回文件的元数据
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns the file metadata
+/// - On failure, returns an error
+///
 pub async fn stat(filepath: &str) -> AnyResult<std::fs::Metadata> {
     // For async stat, consider if get_filepath (which is sync and uses canonicalize) is appropriate.
     // tokio::fs::metadata itself doesn't canonicalize but handles paths directly.
@@ -641,41 +717,44 @@ pub async fn stat(filepath: &str) -> AnyResult<std::fs::Metadata> {
         .with_context(|| format!("Unable to get metadata for file {path}:"))
 }
 
-/// 同步检查文件或目录是否存在
+/// Synchronously check if file or directory exists
 ///
-/// # 参数
-/// - `filepath`: 要检查的文件或目录路径
+/// # Arguments
+/// - `filepath`: Path to check
 ///
-/// # 返回
-/// - 如果存在，返回 `true`
-/// - 如果不存在，返回 `false`
+/// # Returns
+/// - `true` if the path exists
+/// - `false` otherwise
+///
 pub fn exists_sync(filepath: &str) -> bool {
     let path_str_normalized = normalize_path(filepath);
     std::fs::metadata(path_str_normalized).is_ok()
 }
 
-/// 异步检查文件或目录是否存在
+/// Asynchronously check if file or directory exists
 ///
-/// # 参数
-/// - `filepath`: 要检查的文件或目录路径
+/// # Arguments
+/// - `filepath`: Path to check
 ///
-/// # 返回
-/// - 如果存在，返回 `true`
-/// - 如果不存在，返回 `false`
+/// # Returns
+/// - `true` if the path exists
+/// - `false` otherwise
+///
 pub async fn exists(filepath: &str) -> bool {
     // normalize_path is not strictly necessary for tokio::fs::metadata, but can be good for consistency.
     // let path_str_normalized = normalize_path(filepath);
     tokio::fs::metadata(filepath).await.is_ok()
 }
 
-/// 同步检查指定路径是否为文件
+/// Synchronously check if path is a file
 ///
-/// # 参数
-/// - `filepath`: 要检查的路径
+/// # Arguments
+/// - `filepath`: Path to check
 ///
-/// # 返回
-/// - 如果是文件，返回 `true`
-/// - 如果不是文件或路径不存在，返回 `false`
+/// # Returns
+/// - `true` if the path exists and is a file
+/// - `false` otherwise
+///
 pub fn is_file_sync(filepath: &str) -> bool {
     let path_str_normalized = normalize_path(filepath);
     std::fs::metadata(path_str_normalized)
@@ -683,14 +762,15 @@ pub fn is_file_sync(filepath: &str) -> bool {
         .unwrap_or(false)
 }
 
-/// 同步检查指定路径是否为目录
+/// Synchronously check if path is a directory
 ///
-/// # 参数
-/// - `filepath`: 要检查的路径
+/// # Arguments
+/// - `filepath`: Path to check
 ///
-/// # 返回
-/// - 如果是目录，返回 `true`
-/// - 如果不是目录或路径不存在，返回 `false`
+/// # Returns
+/// - `true` if the path exists and is a directory
+/// - `false` otherwise
+///
 pub fn is_dir_sync(filepath: &str) -> bool {
     let path_str_normalized = normalize_path(filepath);
     std::fs::metadata(path_str_normalized)
@@ -698,14 +778,15 @@ pub fn is_dir_sync(filepath: &str) -> bool {
         .unwrap_or(false)
 }
 
-/// 同步检查指定路径是否为符号链接
+/// Synchronously check if path is a symbolic link
 ///
-/// # 参数
-/// - `filepath`: 要检查的路径
+/// # Arguments
+/// - `filepath`: Path to check
 ///
-/// # 返回
-/// - 如果是符号链接，返回 `true`
-/// - 如果不是符号链接或路径不存在，返回 `false`
+/// # Returns
+/// - `true` if the path exists and is a symbolic link
+/// - `false` otherwise
+///
 pub fn is_symlink_sync(filepath: &str) -> bool {
     let path_str_normalized = normalize_path(filepath);
     std::fs::symlink_metadata(path_str_normalized) // Use std::fs::symlink_metadata
@@ -713,14 +794,15 @@ pub fn is_symlink_sync(filepath: &str) -> bool {
         .unwrap_or(false)
 }
 
-/// 同步计算文件的SHA256哈希值
+/// Synchronously calculate SHA256 hash of a file
 ///
-/// # 参数
-/// - `filepath`: 要计算哈希值的文件路径
+/// # Arguments
+/// - `filepath`: Path to the file to hash
 ///
-/// # 返回
-/// - 如果成功，返回文件的十六进制哈希值字符串
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns the hexadecimal hash string
+/// - On failure, returns an error
+///
 pub fn hash_sync(filepath: &str) -> AnyResult<String> {
     use sha2::{Digest, Sha256};
     // get_filepath requires path to exist, which is suitable for hashing.
@@ -746,14 +828,15 @@ pub fn hash_sync(filepath: &str) -> AnyResult<String> {
     Ok(format!("{:x}", hasher.finalize()))
 }
 
-/// 异步计算文件的SHA256哈希值
+/// Asynchronously calculate SHA256 hash of a file
 ///
-/// # 参数
-/// - `filepath`: 要计算哈希值的文件路径
+/// # Arguments
+/// - `filepath`: Path to the file to hash
 ///
-/// # 返回
-/// - 如果成功，返回文件的十六进制哈希值字符串
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns the hexadecimal hash string
+/// - On failure, returns an error
+///
 pub async fn hash(filepath: &str) -> AnyResult<String> {
     use sha2::{Digest, Sha256};
     // get_filepath requires path to exist.
@@ -780,14 +863,15 @@ pub async fn hash(filepath: &str) -> AnyResult<String> {
     Ok(format!("{:x}", hasher.finalize()))
 }
 
-/// 在PATH环境变量中查找指定命令的完整路径
+/// Find the full path of a command in the PATH environment variable
 ///
-/// # 参数
-/// - `command`: 要查找的命令名称
+/// # Arguments
+/// - `command`: Name of the command to find
 ///
-/// # 返回
-/// - 如果找到命令，返回命令的完整路径
-/// - 如果未找到命令，返回一个错误
+/// # Returns
+/// - On success, returns the full path to the command
+/// - On failure, returns an error if command not found
+///
 pub fn which(command: &str) -> AnyResult<String> {
     let paths_var = env::var("PATH").unwrap_or_default();
     for path_dir_osstr in env::split_paths(&paths_var) {
@@ -806,14 +890,15 @@ pub fn which(command: &str) -> AnyResult<String> {
     Err(anyhow!("Command '{}' not found in PATH", command))
 }
 
-/// 同步删除文件
+/// Synchronously delete a file
 ///
-/// # 参数
-/// - `filepath`: 要删除的文件路径
+/// # Arguments
+/// - `filepath`: Path to the file to delete
 ///
-/// # 返回
-/// - 如果成功，返回 `Ok(())`
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns `Ok(())`
+/// - On failure, returns an error
+///
 pub fn unlink_sync(filepath: &str) -> AnyResult<()> {
     // get_filepath requires path to exist, suitable for unlink.
     let path = get_filepath(filepath)
@@ -826,14 +911,15 @@ pub fn unlink_sync(filepath: &str) -> AnyResult<()> {
     Ok(())
 }
 
-/// 获取路径的基本文件名（包含扩展名）
+/// Get the basename of a path (filename with extension)
 ///
-/// # 参数
-/// - `path_str`: 文件路径字符串
+/// # Arguments
+/// - `path_str`: Path string
 ///
-/// # 返回
-/// - 如果成功，返回文件的基本名称
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns the basename
+/// - On failure, returns an error
+///
 pub fn basename(path_str: &str) -> AnyResult<String> {
     let normalized_path = normalize_path(path_str);
     if normalized_path.is_empty() {
@@ -847,14 +933,15 @@ pub fn basename(path_str: &str) -> AnyResult<String> {
         .ok_or_else(|| anyhow!("Path basename contains invalid Unicode characters"))
 }
 
-/// 获取路径的文件名（包含扩展名）
+/// Get the filename of a path (with extension)
 ///
-/// # 参数
-/// - `path_str`: 文件路径字符串
+/// # Arguments
+/// - `path_str`: Path string
 ///
-/// # 返回
-/// - 如果成功，返回文件名
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns the filename
+/// - On failure, returns an error
+///
 pub fn filename(path_str: &str) -> AnyResult<String> {
     let normalized_path = normalize_path(path_str);
     if normalized_path.is_empty() {
@@ -868,14 +955,15 @@ pub fn filename(path_str: &str) -> AnyResult<String> {
         .ok_or_else(|| anyhow!("Path filename contains invalid Unicode characters"))
 }
 
-/// 获取路径的目录部分
+/// Get the directory portion of a path
 ///
-/// # 参数
-/// - `path_str`: 文件路径字符串
+/// # Arguments
+/// - `path_str`: Path string
 ///
-/// # 返回
-/// - 如果成功，返回目录路径
-/// - 如果失败，返回一个错误
+/// # Returns
+/// - On success, returns the directory path
+/// - On failure, returns an error
+///
 pub fn dirname(path_str: &str) -> AnyResult<String> {
     let normalized_path = normalize_path(path_str);
     if normalized_path.is_empty() {

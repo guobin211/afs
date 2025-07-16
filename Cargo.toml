@@ -1,6 +1,6 @@
 [package]
 name = "afs"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 authors = ["michaelbguo@tencent.com"]
 license = "MIT"
@@ -8,7 +8,7 @@ repository = "https://github.com/guobin211/dayjs"
 documentation = "https://docs.rs/afs"
 keywords = ["fs", "path", "afs", "async-fs"]
 categories = ["asynchronous", "filesystem"]
-description = "The first choice of fs library, inspired by @cross/afs"
+description = "The first choice of fs library, inspired by node:fs"
 readme = "README.md"
 
 [dependencies]

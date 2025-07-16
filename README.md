@@ -2,211 +2,203 @@
 
 The first choice of fs library for Rust
 
-## AFS 库函数快速索引表
+[中文](./README.zh.md)
 
-## 文件操作函数
+## afs Library Function Quick Reference
 
-| 函数名                | 类型    | 功能描述                 | 参数                          | 返回值                 |
-|--------------------|-------|----------------------|-----------------------------|---------------------|
-| `read_file_sync`   | sync  | 同步读取文件内容到字符串         | `path: &str`                | `AnyResult<String>` |
-| `read_file`        | async | 异步读取文件内容到字符串         | `path: &str`                | `AnyResult<String>` |
-| `write_file_sync`  | sync  | 同步写入字符串内容到文件         | `path: &str, content: &str` | `AnyResult<()>`     |
-| `write_file`       | async | 异步写入字符串内容到文件         | `path: &str, content: &str` | `AnyResult<()>`     |
-| `append_file_sync` | sync  | 同步追加字符串内容到文件         | `path: &str, content: &str` | `AnyResult<()>`     |
-| `append_file`      | async | 异步追加字符串内容到文件         | `path: &str, content: &str` | `AnyResult<()>`     |
-| `create_file_sync` | sync  | 创建文件（如果不存在），创建必要的父目录 | `filepath: &str`            | `AnyResult<()>`     |
-| `unlink_sync`      | sync  | 同步删除文件               | `filepath: &str`            | `AnyResult<()>`     |
+## File Operations
 
-## 目录操作函数
+| Function Name      | Description                                    |
+|--------------------|-----------------------------------------------|
+| `read_file_sync`   | Synchronously read file content to string    |
+| `read_file`        | Asynchronously read file content to string   |
+| `write_file_sync`  | Synchronously write string content to file   |
+| `write_file`       | Asynchronously write string content to file  |
+| `append_file_sync` | Synchronously append string content to file  |
+| `append_file`      | Asynchronously append string content to file |
+| `create_file_sync` | Create file (if not exists) with parent dirs |
+| `unlink_sync`      | Synchronously delete file                    |
 
-| 函数名          | 类型    | 功能描述         | 参数           | 返回值             |
-|--------------|-------|--------------|--------------|-----------------|
-| `mkdir_sync` | sync  | 同步创建目录（不递归）  | `path: &str` | `AnyResult<()>` |
-| `mkdir`      | async | 异步创建目录（递归创建） | `path: &str` | `AnyResult<()>` |
-| `rmdir_sync` | sync  | 同步删除目录       | `path: &str` | `AnyResult<()>` |
-| `rmdir`      | async | 异步删除目录（递归删除） | `path: &str` | `AnyResult<()>` |
+## Directory Operations
 
-## JSON 文件操作函数
+| Function Name | Description                          |
+|---------------|-------------------------------------|
+| `mkdir_sync`  | Synchronously create directory      |
+| `mkdir`       | Asynchronously create directory     |
+| `rmdir_sync`  | Synchronously remove directory      |
+| `rmdir`       | Asynchronously remove directory     |
 
-| 函数名                 | 类型    | 功能描述           | 参数                          | 返回值                            |
-|---------------------|-------|----------------|-----------------------------|--------------------------------|
-| `read_from_json<T>` | async | 读取JSON文件到结构体   | `file_path: &str`           | `AnyResult<T>`                 |
-| `read_json`         | async | 读取JSON文件到Value | `file_path: &str`           | `AnyResult<serde_json::Value>` |
-| `write_to_json<T>`  | async | 写入结构体到JSON文件   | `file_path: &str, data: &T` | `AnyResult<()>`                |
+## JSON File Operations
 
-## 文件/目录检查函数
+| Function Name       | Description                      |
+|--------------------|----------------------------------|
+| `read_from_json<T>` | Read JSON file to struct        |
+| `read_json`         | Read JSON file to Value          |
+| `write_to_json<T>`  | Write struct to JSON file        |
 
-| 函数名               | 类型    | 功能描述            | 参数                | 返回值    |
-|-------------------|-------|-----------------|-------------------|--------|
-| `file_exists`     | async | 判断文件是否存在        | `file_path: &str` | `bool` |
-| `dir_exists`      | async | 判断目录是否存在        | `dir_path: &str`  | `bool` |
-| `exists_sync`     | sync  | 同步检查文件或目录是否存在   | `filepath: &str`  | `bool` |
-| `exists`          | async | 异步检查文件或目录是否存在   | `filepath: &str`  | `bool` |
-| `is_file`         | async | 判断是否是文件         | `file_path: &str` | `bool` |
-| `is_dir`          | async | 判断是否是目录         | `dir_path: &str`  | `bool` |
-| `is_symlink`      | async | 判断是否是符号链接       | `path: &str`      | `bool` |
-| `is_file_sync`    | sync  | 同步检查指定路径是否为文件   | `filepath: &str`  | `bool` |
-| `is_dir_sync`     | sync  | 同步检查指定路径是否为目录   | `filepath: &str`  | `bool` |
-| `is_symlink_sync` | sync  | 同步检查指定路径是否为符号链接 | `filepath: &str`  | `bool` |
+## File/Directory Check Functions
 
-## 文件大小和元数据函数
+| Function Name     | Description                           |
+|-------------------|---------------------------------------|
+| `file_exists`     | Check if file exists                  |
+| `dir_exists`      | Check if directory exists             |
+| `exists_sync`     | Synchronously check if path exists    |
+| `exists`          | Asynchronously check if path exists   |
+| `is_file`         | Check if path is a file               |
+| `is_dir`          | Check if path is a directory          |
+| `is_symlink`      | Check if path is a symbolic link      |
+| `is_file_sync`    | Synchronously check if path is file   |
+| `is_dir_sync`     | Synchronously check if path is dir    |
+| `is_symlink_sync` | Synchronously check if path is symlink|
 
-| 函数名                  | 类型    | 功能描述         | 参数                | 返回值                            |
-|----------------------|-------|--------------|-------------------|--------------------------------|
-| `get_file_size`      | async | 获取文件大小       | `file_path: &str` | `AnyResult<u64>`               |
-| `get_file_real_size` | async | 获取软链接文件的实际大小 | `file_path: &str` | `AnyResult<u64>`               |
-| `get_dir_size`       | async | 获取目录大小       | `dir_path: &str`  | `AnyResult<u64>`               |
-| `stat_sync`          | sync  | 同步获取文件的元数据信息 | `filepath: &str`  | `AnyResult<std::fs::Metadata>` |
-| `stat`               | async | 异步获取文件的元数据信息 | `filepath: &str`  | `AnyResult<std::fs::Metadata>` |
+## File Size and Metadata Functions
 
-## 系统和磁盘函数
+| Function Name        | Description                        |
+|---------------------|------------------------------------|
+| `get_file_size`      | Get file size                      |
+| `get_file_real_size` | Get real size of symlinked file    |
+| `get_dir_size`       | Get directory size                 |
+| `stat_sync`          | Synchronously get file metadata    |
+| `stat`               | Asynchronously get file metadata   |
 
-| 函数名         | 类型    | 功能描述             | 参数              | 返回值                 |
-|-------------|-------|------------------|-----------------|---------------------|
-| `diskusage` | async | 获取磁盘使用情况         | 无               | `AnyResult<f64>`    |
-| `which`     | sync  | 在PATH环境变量中查找指定命令 | `command: &str` | `AnyResult<String>` |
+## System and Disk Functions
 
-## 临时文件和目录函数
+| Function Name | Description                    |
+|---------------|--------------------------------|
+| `diskusage`   | Get disk usage                 |
+| `which`       | Find command in PATH           |
 
-| 函数名          | 类型    | 功能描述   | 参数          | 返回值                 |
-|--------------|-------|--------|-------------|---------------------|
-| `mktempdir`  | async | 创建临时目录 | 无           | `AnyResult<String>` |
-| `mktempfile` | async | 创建临时文件 | `ext: &str` | `AnyResult<String>` |
+## Temporary File and Directory Functions
 
-## 权限和链接函数
+| Function Name | Description             |
+|---------------|-------------------------|
+| `mktempdir`   | Create temporary directory |
+| `mktempfile`  | Create temporary file      |
 
-| 函数名          | 类型   | 功能描述   | 参数                            | 返回值             |
-|--------------|------|--------|-------------------------------|-----------------|
-| `chmod_sync` | sync | 修改文件权限 | `mode: &str, file_path: &str` | `AnyResult<()>` |
-| `soft_link`  | sync | 创建软链接  | `o: &str, l: &str`            | `AnyResult<()>` |
+## Permission and Link Functions
 
-## 路径处理函数
+| Function Name | Description            |
+|---------------|------------------------|
+| `chmod_sync`  | Change file permissions |
+| `soft_link`   | Create symbolic link    |
 
-| 函数名              | 类型   | 功能描述            | 参数                                | 返回值                                  |
-|------------------|------|-----------------|-----------------------------------|--------------------------------------|
-| `resolve`        | sync | 按Node.js方式处理路径  | `base_str: &str, input_str: &str` | `Result<String, std::ffi::OsString>` |
-| `normalize_path` | sync | 将路径中的反斜杠替换为正斜杠  | `path: &str`                      | `String`                             |
-| `get_filepath`   | sync | 获取文件的规范化路径      | `path: &str`                      | `AnyResult<String>`                  |
-| `basename`       | sync | 获取路径的基本文件名      | `path_str: &str`                  | `AnyResult<String>`                  |
-| `filename`       | sync | 获取路径的文件名（包含扩展名） | `path_str: &str`                  | `AnyResult<String>`                  |
-| `dirname`        | sync | 获取路径的目录部分       | `path_str: &str`                  | `AnyResult<String>`                  |
+## Path Processing Functions
 
-## 哈希函数
+| Function Name    | Description                           |
+|------------------|---------------------------------------|
+| `resolve`        | Process path in Node.js style         |
+| `normalize_path` | Replace backslashes with forward slashes |
+| `get_filepath`   | Get canonicalized file path           |
+| `basename`       | Get base filename                      |
+| `filename`       | Get filename with extension            |
+| `dirname`        | Get directory part of path             |
 
-| 函数名         | 类型    | 功能描述             | 参数               | 返回值                 |
-|-------------|-------|------------------|------------------|---------------------|
-| `hash_sync` | sync  | 同步计算文件的SHA256哈希值 | `filepath: &str` | `AnyResult<String>` |
-| `hash`      | async | 异步计算文件的SHA256哈希值 | `filepath: &str` | `AnyResult<String>` |
+## Hash Functions
 
-## 按功能分类的快速查找
+| Function Name | Description                     |
+|---------------|---------------------------------|
+| `hash_sync`   | Synchronously calculate SHA256  |
+| `hash`        | Asynchronously calculate SHA256 |
 
-### 📁 文件读写
+## Quick Find by Category
 
-- 读取：`read_file`
-- 写入：`write_file`, `write_file_sync`
-- 追加：`append_file`, `append_file_sync`
-- 创建：`create_file_sync`
-- 删除：`unlink_sync`
+### 📁 File I/O
+- Read: `read_file`
+- Write: `write_file`, `write_file_sync`
+- Append: `append_file`, `append_file_sync`
+- Create: `create_file_sync`
+- Delete: `unlink_sync`
 
-### 📂 目录操作
+### 📂 Directory Operations
+- Create: `mkdir`, `mkdir_sync`
+- Remove: `rmdir`, `rmdir_sync`
 
-- 创建：`mkdir`, `mkdir_sync`
-- 删除：`rmdir`, `rmdir_sync`
+### 🔍 Existence Checks
+- Files: `file_exists`, `is_file`, `is_file_sync`
+- Directories: `dir_exists`, `is_dir`, `is_dir_sync`
+- Symlinks: `is_symlink`, `is_symlink_sync`
+- General: `exists`, `exists_sync`
 
-### 🔍 存在性检查
+### 📊 Size and Information
+- File size: `get_file_size`, `get_file_real_size`
+- Directory size: `get_dir_size`
+- Metadata: `stat`, `stat_sync`
+- Disk usage: `diskusage`
 
-- 文件：`file_exists`, `is_file`, `is_file_sync`
-- 目录：`dir_exists`, `is_dir`, `is_dir_sync`
-- 符号链接：`is_symlink`, `is_symlink_sync`
-- 通用：`exists`, `exists_sync`
+### 🛣️ Path Processing
+- Normalize: `normalize_path`, `get_filepath`
+- Resolve: `resolve`
+- Extract: `basename`, `filename`, `dirname`
 
-### 📊 大小和信息
+### 🔧 System Functions
+- Temporary files: `mktempdir`, `mktempfile`
+- Permissions: `chmod_sync`
+- Links: `soft_link`
+- Command lookup: `which`
+- Hashing: `hash`, `hash_sync`
 
-- 文件大小：`get_file_size`, `get_file_real_size`
-- 目录大小：`get_dir_size`
-- 元数据：`stat`, `stat_sync`
-- 磁盘使用：`diskusage`
+### 📋 JSON Operations
+- Read: `read_json`, `read_from_json`
+- Write: `write_to_json`
 
-### 🛣️ 路径处理
+## Usage Guide
 
-- 规范化：`normalize_path`, `get_filepath`
-- 解析：`resolve`
-- 提取：`basename`, `filename`, `dirname`
+### Async vs Sync
+- Functions with `_sync` suffix are synchronous versions
+- Functions without suffix are usually asynchronous (require `.await`)
+- Selection guidelines:
+  - Use async versions in async environments
+  - Use sync versions in sync environments or simple scripts
 
-### 🔧 系统功能
+### Error Handling
+- Most functions return `AnyResult<T>`, requiring error handling
+- Check functions (like `exists`, `is_file`, etc.) return `bool` directly
 
-- 临时文件：`mktempdir`, `mktempfile`
-- 权限：`chmod_sync`
-- 链接：`soft_link`
-- 命令查找：`which`
-- 哈希：`hash`, `hash_sync`
+### Path Format
+- Cross-platform path support (auto-handles Windows and Unix separators)
+- `normalize_path` can unify path format
 
-### 📋 JSON操作
-
-- 读取：`read_json`, `read_from_json`
-- 写入：`write_to_json`
-
-## 使用说明
-
-### 异步 vs 同步
-
-- 带 `_sync` 后缀的函数是同步版本
-- 不带后缀的函数通常是异步版本（需要 `.await`）
-- 选择原则：
-    - 在异步环境中优先使用异步版本
-    - 在同步环境或简单脚本中使用同步版本
-
-### 错误处理
-
-- 大部分函数返回 `AnyResult<T>`，需要进行错误处理
-- 检查类函数（如 `exists`, `is_file` 等）直接返回 `bool`
-
-### 路径格式
-
-- 支持跨平台路径（自动处理 Windows 和 Unix 路径分隔符）
-- `normalize_path` 可以统一路径格式
-
-### 示例用法
+### Example Usage
 
 ```rust
 use afs::*;
 
-// 异步文件操作
+// Async file operations
 async fn example() -> AnyResult<()> {
-    // 读取文件
+    // Read file
     let content = read_file("test.txt").await?;
 
-    // 写入文件
+    // Write file
     write_file("output.txt", &content).await?;
 
-    // 检查文件是否存在
+    // Check if file exists
     if file_exists("output.txt").await {
-        println!("文件创建成功");
+        println!("File created successfully");
     }
 
-    // 获取文件大小
+    // Get file size
     let size = get_file_size("output.txt").await?;
-    println!("文件大小: {} 字节", size);
+    println!("File size: {} bytes", size);
 
     Ok(())
 }
 
-// 同步操作
+// Sync operations
 fn sync_example() -> AnyResult<()> {
-    // 创建目录
+    // Create directory
     mkdir_sync("new_dir")?;
 
-    // 创建文件
+    // Create file
     create_file_sync("new_dir/test.txt")?;
 
-    // 写入内容
+    // Write content
     write_file_sync("new_dir/test.txt", "Hello, World!")?;
 
-    // 获取路径信息
+    // Get path information
     let dir = dirname("new_dir/test.txt")?;
     let name = basename("new_dir/test.txt")?;
 
-    println!("目录: {}, 文件名: {}", dir, name);
+    println!("Directory: {}, Filename: {}", dir, name);
 
     Ok(())
 }
