@@ -1,10 +1,10 @@
 [package]
 name = "afs"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 authors = ["michaelbguo@tencent.com"]
 license = "MIT"
-repository = "https://github.com/guobin211/dayjs"
+repository = "https://github.com/guobin211/afs"
 documentation = "https://docs.rs/afs"
 keywords = ["fs", "path", "afs", "async-fs"]
 categories = ["asynchronous", "filesystem"]
