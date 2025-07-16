@@ -40,8 +40,8 @@ pub async fn read_file(path: &str) -> AnyResult<String> {
 /// - On success, returns a string containing the file content
 /// - On failure, returns an error
 pub fn read_file_sync(path: &str) -> AnyResult<String> {
-    let content = std::fs::read_to_string(path)
-        .with_context(|| format!("Failed to read file: {path}"))?;
+    let content =
+        std::fs::read_to_string(path).with_context(|| format!("Failed to read file: {path}"))?;
     Ok(content)
 }
 

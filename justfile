@@ -10,3 +10,6 @@ lint:
 test:
     cargo test
 
+fmt:
+    cargo fmt --all
+    prettier --write ./*.md
